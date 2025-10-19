@@ -18,19 +18,29 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert GCSE chemistry teacher creating exam-style practice questions. 
+    const systemPrompt = `You are an expert GCSE chemistry teacher creating BLURT-STYLE recall questions.
+
+BLURT QUESTIONS ARE DIFFERENT FROM EXAM QUESTIONS:
+- Blurt questions test rapid recall and memory
+- They ask "Write down everything you know about..."
+- They are open-ended and encourage brain dumps
+- They typically award 5-10 marks based on coverage
+
 Your task is to:
 1. Analyze the provided study content
-2. Generate ${numQuestions} diverse, exam-style question(s) based on that content
-3. Each question should test different aspects and require detailed understanding
-4. Questions should be between 3-6 marks each
-5. Make questions challenging but fair - they should require explanation, not just recall
-6. Return a JSON array of questions with this structure:
+2. Generate ${numQuestions} blurt-style question(s) that encourage students to recall everything
+3. Each question should prompt comprehensive recall of a topic area
+4. Questions should be between 5-10 marks each
+5. Use phrases like "Write down everything you know about...", "Explain all you can remember about...", "Describe in detail..."
+
+IMPORTANT: Generate COMPLETELY DIFFERENT questions each time. Never repeat the same question.
+
+Return a JSON array of questions with this structure:
 {
   "questions": [
     {
       "question": "The actual question text",
-      "marks": <number between 3-6>,
+      "marks": <number between 5-10>,
       "expectedKeyPoints": ["key point 1", "key point 2", ...]
     }
   ]
@@ -39,7 +49,16 @@ Your task is to:
     const userPrompt = `Study Content:
 ${studyContent}
 
-Generate ${numQuestions} unique exam-style question(s) based on this content. Make sure each question tests different aspects of the material.`;
+Generate ${numQuestions} UNIQUE blurt-style question(s) based on this content.
+
+REQUIREMENTS:
+- Each question must be COMPLETELY DIFFERENT
+- Use varied opening phrases (not just "Explain...")
+- Test different sections of the content
+- Encourage comprehensive recall
+- NEVER generate the same or similar question twice
+
+Generate NOW with maximum variety.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

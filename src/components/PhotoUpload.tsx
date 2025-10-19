@@ -71,7 +71,8 @@ export const PhotoUpload = ({ studyContent, questions, currentQuestion, topicId,
           subsectionId,
           subsectionTitle,
           questionType,
-          photoImage: previewUrl
+          photoImage: previewUrl,
+          studyContent
         }
       });
     } catch (error) {

@@ -22,47 +22,61 @@ serve(async (req) => {
     let systemPrompt = '';
     
     if (questionType === 'exam') {
-      systemPrompt = `You are an AQA GCSE Chemistry examiner creating high-quality exam questions.
+      systemPrompt = `You are an AQA GCSE Chemistry examiner creating high-quality EXAM-STYLE questions.
 
-Generate 3 varied exam-style questions based on the study content. Include:
-- 1 marker questions (recall/definition)
-- 2 marker questions (explain/describe)
-- 4-6 marker questions (extended response)
-- Calculation questions with data
-- Questions requiring diagrams or labelled drawings
-- Questions using data from tables or graphs
+EXAM QUESTIONS ARE DIFFERENT FROM BLURT QUESTIONS:
+- Exam questions are structured with specific mark allocations
+- They use command words (state, describe, explain, calculate)
+- They test specific knowledge points, not broad recall
+- They may include data, graphs, or require calculations
+
+Generate 1 AQA-style exam question based on the study content. Include:
+- Use varied question types: 1-mark (recall), 2-mark (explain), 4-6 mark (extended)
+- May include calculations, data interpretation, or diagram requirements
+- Use appropriate command words (state, describe, explain, calculate, compare)
+- Each question should target specific learning points
+
+IMPORTANT: Generate COMPLETELY DIFFERENT questions each time. Vary:
+- The command words used
+- The specific topic/concept being tested
+- The question format (calculation vs explanation vs description)
+- The marks allocated
 
 For EACH question, provide:
-1. The question text with clear mark allocation [X marks]
-2. A detailed mark scheme showing:
-   - Each marking point
-   - Acceptable alternatives
-   - Command words explained (state, describe, explain, etc.)
-3. Model answer
+1. The question text with clear mark allocation
+2. Expected key points for marking
 
-Return as JSON array: 
+Return as JSON array:
 [{
-  "question": "question text with [X marks]",
+  "question": "question text [X marks]",
   "marks": X,
-  "markScheme": ["point 1", "point 2", ...],
-  "modelAnswer": "example answer"
+  "expectedKeyPoints": ["key point 1", "key point 2", ...]
 }]`;
     } else {
-      systemPrompt = `You are a GCSE chemistry teacher creating blurting recall questions.
+      systemPrompt = `You are a GCSE chemistry teacher creating BLURT-STYLE recall questions.
 
-Generate 5 diverse recall questions that test memory and understanding. Include:
-- Simple recall questions
-- Questions requiring explanations
-- Questions about processes or experiments
-- Questions asking for examples
-- Questions connecting multiple concepts
+BLURT QUESTIONS ARE DIFFERENT FROM EXAM QUESTIONS:
+- Blurt questions test rapid recall and memory
+- They ask "Write down everything you know about..."
+- They are open-ended and encourage brain dumps
+- They typically award 5-10 marks based on coverage
 
-IMPORTANT: Make questions SIGNIFICANTLY DIFFERENT from each other. Avoid repetition.
+Generate 1 blurt-style question that encourages comprehensive recall. Use phrases like:
+- "Write down everything you know about..."
+- "Explain all you can remember about..."
+- "Describe in detail everything related to..."
+- "What do you remember about...?"
+
+IMPORTANT: Generate COMPLETELY DIFFERENT questions each time.
+- Never repeat the same opening phrase
+- Test different sections of the content
+- Vary the scope (broad topic vs specific concept)
 
 Return as JSON array:
 [{
   "question": "question text",
-  "type": "recall|explain|process|example|connection"
+  "marks": <number between 5-10>,
+  "expectedKeyPoints": ["key point 1", "key point 2", ...]
 }]`;
     }
 
@@ -76,7 +90,7 @@ Return as JSON array:
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Study Content:\n\n${studyContent}` }
+          { role: 'user', content: `Study Content:\n\n${studyContent}\n\nGenerate a ${questionType === 'exam' ? 'EXAM-STYLE' : 'BLURT-STYLE'} question now. Make it UNIQUE and DIFFERENT from any previous questions. Use maximum creativity and variation.` }
         ],
         response_format: { type: "json_object" }
       }),

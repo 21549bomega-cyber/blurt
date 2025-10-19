@@ -494,7 +494,7 @@ const BlurPractice = () => {
     // Check if there are more pairs
     const nextPairIndex = currentPairIndex + 1;
     const nextPairStart = nextPairIndex * 2;
-    
+
     if (nextPairStart < internalSubsections.length) {
       // Move to next pair
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
@@ -506,6 +506,19 @@ const BlurPractice = () => {
       setShowQuestionFeedback(false);
       setExpandedSections([0]);
       setCurrentGeneratedQuestion(null);
+      setQuestionResults([]);
+      setTimeElapsed(0);
+
+      // Recalculate memorization time for new pair
+      const textContent = nextPair.map(sub => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(sub.html, 'text/html');
+        return doc.body.textContent || '';
+      }).join(' ');
+
+      const wordCount = textContent.trim().split(/\s+/).length;
+      const seconds = Math.ceil((wordCount / 50) * 10);
+      setMemorizationDuration(Math.max(30, seconds));
     } else {
       // No more subsections, analyze knowledge gaps and show results
       await analyzeKnowledgeGaps();

@@ -395,11 +395,12 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, {
-              state: { moveToNext: true }
+              state: { moveToNext: true },
+              replace: true
             })}
           >
             <BookOpen className="mr-2 h-5 w-5" />
-            Move to Next
+            Next Chapter
           </Button>
           <Button
             variant="outline"
